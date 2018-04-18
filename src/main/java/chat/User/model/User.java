@@ -1,5 +1,7 @@
 package chat.User.model;
 
+import java.util.Date;
+
 /**
  * created by ewang on 2018/4/18.
  */
@@ -13,11 +15,14 @@ public class User {
 
     private final String username;
 
-    public User(long id, String account, String password, String username) {
+    private final Date createTime;
+
+    public User(long id, String account, String password, String username,Date createTime) {
         this.id = id;
         this.account = account;
         this.password = password;
         this.username = username;
+        this.createTime=createTime;
     }
 
     public long getId() {
@@ -34,5 +39,9 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
     }
 }

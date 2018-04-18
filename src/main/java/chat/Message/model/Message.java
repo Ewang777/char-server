@@ -15,13 +15,16 @@ public class Message {
 
     private final String content;
 
+    private final long sessionId;
+
     private final Date createTime;
 
-    public Message(long id, long userId, long toUserId, String content, Date createTime) {
+    public Message(long id, long userId, long toUserId, String content, long sessionId, Date createTime) {
         this.id = id;
         this.userId = userId;
         this.toUserId = userId;
         this.content = content;
+        this.sessionId = sessionId;
         this.createTime = createTime;
     }
 
@@ -39,6 +42,10 @@ public class Message {
 
     public String getContent() {
         return content;
+    }
+
+    public long getSessionId() {
+        return sessionId;
     }
 
     public Date getCreateTime() {
