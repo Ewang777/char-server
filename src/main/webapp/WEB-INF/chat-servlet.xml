@@ -13,7 +13,13 @@
           class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 
     <bean name="handlerAdapter"
-          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="customReturnValueHandlers">
+            <list>
+                <bean class="chat.response.TransToJson"/>
+            </list>
+        </property>
+    </bean>
 
 
 </beans>

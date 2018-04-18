@@ -4,12 +4,15 @@ import chat.Message.dao.MessageDAO;
 import chat.Message.model.Message;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -41,11 +44,19 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
     }
 
     public List<Message> findBySession(long sessionId) {
-
-        return null;
+        String sql = "select * from message where session_id = :sessionId";
+        return jdbcTemplate.query(sql, Collections.singletonMap("sessionId", sessionId), this);
     }
 
     public long insert(long userId, long toUserId, long sessionId, String content) {
-        return 0;
+        String sql = "insert into message(user_id, to_user_id, session_id, content, create_time) values " +
+                "(:userId, :toUserId, :sessionId, content, now())";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
+        parameterSource.addValue("toUserId", toUserId)
+                .addValue("sessionId", sessionId)
+                .addValue("content", content);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, parameterSource, keyHolder);
+        return keyHolder.getKey().longValue();
     }
 }
