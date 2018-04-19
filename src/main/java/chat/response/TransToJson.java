@@ -1,5 +1,6 @@
 package chat.response;
 
+import chat.Server.JsonHelper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.MethodParameter;
@@ -25,9 +26,10 @@ public class TransToJson implements HandlerMethodReturnValueHandler {
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
         if (returnValue == null || ((String) returnValue).contains("errMsg")) {
             mavContainer.setRequestHandled(true);
+            outputJson((HttpServletResponse) webRequest.getNativeResponse(), (String) returnValue);
             return;
         }
-        outputJson((HttpServletResponse) webRequest.getNativeResponse(), encodeString(returnValue));
+        outputJson((HttpServletResponse) webRequest.getNativeResponse(), JsonHelper.encode(returnValue));
     }
 
     public static void outputJson(HttpServletResponse response, String json) throws IOException {
@@ -39,16 +41,4 @@ public class TransToJson implements HandlerMethodReturnValueHandler {
         printWriter.close();
     }
 
-    public static String encodeString(Object object) {
-        ObjectMapper mapper = new ObjectMapper();
-        //禁用未知属性打断反序列化功能
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (Exception e) {
-            throw new RuntimeException("write json fail");
-        }
-    }
 }
