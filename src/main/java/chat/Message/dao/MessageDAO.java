@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface MessageDAO {
 
+    Message getById(long id);
+
     List<Message> findBySession(long sessionId);
 
     long insert(long userId, long toUserId, long sessionId, String content);

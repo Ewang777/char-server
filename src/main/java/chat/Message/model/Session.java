@@ -9,15 +9,15 @@ public class Session {
 
     private final long id;
 
-    private final long authorId;
+    private final long userId;
 
     private final long toUserId;
 
     private final Date createTime;
 
-    public Session(long id, long authorId, long toUserId, Date createTime) {
+    public Session(long id, long userId, long toUserId, Date createTime) {
         this.id = id;
-        this.authorId = authorId;
+        this.userId = userId;
         this.toUserId = toUserId;
         this.createTime = createTime;
     }
@@ -26,8 +26,8 @@ public class Session {
         return id;
     }
 
-    public long getAuthorId() {
-        return authorId;
+    public long getUserId() {
+        return userId;
     }
 
     public long getToUserId() {

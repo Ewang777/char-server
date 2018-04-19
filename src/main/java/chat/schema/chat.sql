@@ -13,11 +13,11 @@ CREATE TABLE user(
 
 CREATE TABLE session(
   id bigint unsigned NOT NULL auto_increment,
-  author_id bigint unsigned NOT NULL,
+  user_id bigint unsigned NOT NULL,
   to_user_id bigint unsigned NOT NULL,
   create_time DATETIME NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT session_fk_user FOREIGN KEY (author_id) REFERENCES user(id),
+  CONSTRAINT session_fk_user FOREIGN KEY (user_id) REFERENCES user(id),
   CONSTRAINT session_fk_to_user FOREIGN KEY (to_user_id) REFERENCES user(id)
 );
 

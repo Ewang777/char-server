@@ -3,6 +3,7 @@ package chat.Message.dao.Impl;
 import chat.Message.dao.MessageDAO;
 import chat.Message.model.Message;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -41,6 +42,16 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
                 rs.getString("content"),
                 rs.getLong("session_id"),
                 new Date(rs.getTimestamp("create_time").getTime()));
+    }
+
+    @Override
+    public Message getById(long id) {
+        String sql = "select * from message where id = :id";
+        try {
+            return jdbcTemplate.queryForObject(sql, Collections.singletonMap("id", id), this);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Message> findBySession(long sessionId) {

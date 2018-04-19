@@ -24,9 +24,11 @@ public class TransToJson implements HandlerMethodReturnValueHandler {
 
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
-        if (returnValue == null || ((String) returnValue).contains("errMsg")) {
+        if (returnValue == null) {
+            if (((String) returnValue).contains("errMsg")) {
+                outputJson((HttpServletResponse) webRequest.getNativeResponse(), (String) returnValue);
+            }
             mavContainer.setRequestHandled(true);
-            outputJson((HttpServletResponse) webRequest.getNativeResponse(), (String) returnValue);
             return;
         }
         outputJson((HttpServletResponse) webRequest.getNativeResponse(), JsonHelper.encode(returnValue));

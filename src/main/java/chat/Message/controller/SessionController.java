@@ -24,22 +24,29 @@ public class SessionController {
     @Autowired
     private MessageDAO messageDAO;
 
-    @RequestMapping("/message")
-    public List<Message> getMessage(@RequestParam("authorId") long authorId,
+    @RequestMapping("/message/get")
+    public List<Message> getMessage(@RequestParam("userId") long userId,
                                     @RequestParam("toUserId") long toUserId) {
-        Session session = getSession(authorId, toUserId);
+        Session session = getSession(userId, toUserId);
         return messageDAO.findBySession(session.getId());
     }
 
-    public void sendMessage(@RequestParam("userId") long userId,
-                            @RequestParam("toUserId") long toUserId){
-
+    @RequestMapping("/message/send")
+    public Message sendMessage(@RequestParam("userId") long userId,
+                               @RequestParam("toUserId") long toUserId,
+                               @RequestParam("content") String content) {
+        Session session = getSession(userId, toUserId);
+        Session toSession = getSession(toUserId, userId);
+        messageDAO.insert(userId, toUserId, toSession.getId(), content);
+        long messageId = messageDAO.insert(userId, toUserId, session.getId(), content);
+        Message message = messageDAO.getById(messageId);
+        return message;
     }
 
-    Session getSession(long authorId, long toUserId) {
-        Session session = sessionDAO.getByAuthorAndToUser(authorId, toUserId);
+    Session getSession(long userId, long toUserId) {
+        Session session = sessionDAO.getByUserAndToUser(userId, toUserId);
         if (session == null) {
-            long sessionId = sessionDAO.insert(authorId, toUserId);
+            long sessionId = sessionDAO.insert(userId, toUserId);
             session = sessionDAO.getById(sessionId);
         }
         return session;

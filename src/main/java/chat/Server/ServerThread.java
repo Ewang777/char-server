@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 
 /**
@@ -28,6 +29,16 @@ public class ServerThread implements Runnable {
         String data;
         while ((data = readFromClient()) != null) {
             Message message = JsonHelper.decode(data, Message.class);
+            long toUserId = message.getToUserId();
+            Socket toSocket = Server.socketMap.get(toUserId);
+            if (toSocket != null) {
+                try {
+                    OutputStream outputStream = toSocket.getOutputStream();
+                    outputStream.write(message.getContent().getBytes("utf-8"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
 

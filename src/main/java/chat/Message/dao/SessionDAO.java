@@ -9,7 +9,7 @@ public interface SessionDAO {
 
     Session getById(long id);
 
-    Session getByAuthorAndToUser(long authorId, long toUserId);
+    Session getByUserAndToUser(long userId, long toUserId);
 
-    long insert(long authorId, long toUserId);
+    long insert(long userId, long toUserId);
 }

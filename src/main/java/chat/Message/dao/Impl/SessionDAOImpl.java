@@ -7,6 +7,7 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +36,7 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
 
     public Session mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Session(rs.getLong("id"),
-                rs.getLong("author_id"),
+                rs.getLong("user_id"),
                 rs.getLong("to_user_id"),
                 new Date(rs.getTimestamp("create_time").getTime()));
     }
@@ -51,9 +52,9 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
     }
 
     @Override
-    public Session getByAuthorAndToUser(long authorId, long toUserId) {
-        String sql = "select * from session where author_id = :authorId and to_user_id = :toUserId";
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource("authorId", authorId);
+    public Session getByUserAndToUser(long userId, long toUserId) {
+        String sql = "select * from session where user_id = :userId and to_user_id = :toUserId";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         parameterSource.addValue("toUserId", toUserId);
         try {
             return jdbcTemplate.queryForObject(sql, parameterSource, this);
@@ -62,7 +63,12 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
         }
     }
 
-    public long insert(long authorId, long toUserId) {
-        return 0;
+    public long insert(long userId, long toUserId) {
+        String sql = "insert into session (user_id, to_user_id, create_time) values (:userId, :toUserId, now())";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
+        parameterSource.addValue("toUserId", toUserId);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, parameterSource, keyHolder);
+        return keyHolder.getKey().longValue();
     }
 }
