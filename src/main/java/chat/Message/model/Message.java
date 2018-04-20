@@ -22,7 +22,7 @@ public class Message {
     public Message(long id, long userId, long toUserId, String content, long sessionId, Date createTime) {
         this.id = id;
         this.userId = userId;
-        this.toUserId = userId;
+        this.toUserId = toUserId;
         this.content = content;
         this.sessionId = sessionId;
         this.createTime = createTime;

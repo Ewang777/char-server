@@ -1,4 +1,4 @@
-package chat.Server;
+package chat.Helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,6 +10,7 @@ import java.io.IOException;
  * created by ewang on 2018/4/19.
  */
 public class JsonHelper {
+
     static ObjectMapper mapper = null;
 
     static {

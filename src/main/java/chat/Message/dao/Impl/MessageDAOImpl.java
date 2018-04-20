@@ -1,8 +1,8 @@
 package chat.Message.dao.Impl;
 
+import chat.Helper.DBHelper;
 import chat.Message.dao.MessageDAO;
 import chat.Message.model.Message;
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -27,12 +27,7 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
 
     @PostConstruct
     public void init() {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/chat");
-        dataSource.setUsername("root");
-        dataSource.setPassword("0530");
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        jdbcTemplate = new NamedParameterJdbcTemplate(DBHelper.getDataSource());
     }
 
     public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -61,7 +56,7 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
 
     public long insert(long userId, long toUserId, long sessionId, String content) {
         String sql = "insert into message(user_id, to_user_id, session_id, content, create_time) values " +
-                "(:userId, :toUserId, :sessionId, content, now())";
+                "(:userId, :toUserId, :sessionId, :content, now())";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         parameterSource.addValue("toUserId", toUserId)
                 .addValue("sessionId", sessionId)

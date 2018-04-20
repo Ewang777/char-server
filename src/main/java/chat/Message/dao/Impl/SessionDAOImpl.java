@@ -1,8 +1,8 @@
 package chat.Message.dao.Impl;
 
+import chat.Helper.DBHelper;
 import chat.Message.dao.SessionDAO;
 import chat.Message.model.Session;
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,12 +26,7 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
 
     @PostConstruct
     public void init() {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/chat");
-        dataSource.setUsername("root");
-        dataSource.setPassword("0530");
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        jdbcTemplate = new NamedParameterJdbcTemplate(DBHelper.getDataSource());
     }
 
     public Session mapRow(ResultSet rs, int rowNum) throws SQLException {

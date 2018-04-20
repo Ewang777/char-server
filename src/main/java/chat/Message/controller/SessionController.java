@@ -4,6 +4,7 @@ import chat.Message.dao.MessageDAO;
 import chat.Message.dao.SessionDAO;
 import chat.Message.model.Message;
 import chat.Message.model.Session;
+import chat.response.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,22 +26,23 @@ public class SessionController {
     private MessageDAO messageDAO;
 
     @RequestMapping("/message/get")
-    public List<Message> getMessage(@RequestParam("userId") long userId,
-                                    @RequestParam("toUserId") long toUserId) {
+    public Object getMessage(@RequestParam("userId") long userId,
+                             @RequestParam("toUserId") long toUserId) {
         Session session = getSession(userId, toUserId);
-        return messageDAO.findBySession(session.getId());
+        List<Message> messages = messageDAO.findBySession(session.getId());
+        return new ResponseWrapper(messages, "messageList");
     }
 
     @RequestMapping("/message/send")
-    public Message sendMessage(@RequestParam("userId") long userId,
-                               @RequestParam("toUserId") long toUserId,
-                               @RequestParam("content") String content) {
+    public Object sendMessage(@RequestParam("userId") long userId,
+                              @RequestParam("toUserId") long toUserId,
+                              @RequestParam("content") String content) {
         Session session = getSession(userId, toUserId);
         Session toSession = getSession(toUserId, userId);
         messageDAO.insert(userId, toUserId, toSession.getId(), content);
         long messageId = messageDAO.insert(userId, toUserId, session.getId(), content);
         Message message = messageDAO.getById(messageId);
-        return message;
+        return new ResponseWrapper(message, "message");
     }
 
     Session getSession(long userId, long toUserId) {

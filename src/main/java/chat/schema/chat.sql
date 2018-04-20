@@ -6,8 +6,8 @@ CREATE TABLE user(
   id bigint unsigned NOT NULL auto_increment,
   account VARCHAR(16) NOT NULL,
   password VARCHAR(32) NOT NULL,
-  username VARCHAR(64) NOT NULL DEFAULT ('customer'+id),
-  create_time datatime NOT NULL,
+  username VARCHAR(64) NOT NULL DEFAULT 'customer',
+  create_time DATETIME NOT NULL,
   PRIMARY KEY (id)
 );
 

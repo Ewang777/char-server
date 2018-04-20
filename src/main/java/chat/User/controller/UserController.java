@@ -2,6 +2,7 @@ package chat.User.controller;
 
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
+import chat.response.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,15 +33,15 @@ public class UserController {
         account = account.trim();
         pwd = pwd.trim();
         if (account.isEmpty() || null == account || pwd.isEmpty() || null == pwd) {
-            return "errMsg: 用户名或密码不得为空";
+            return new ResponseWrapper(" 用户名或密码不得为空");
         }
         User exist = userDAO.getByAccount(account);
-        if (exist == null) {
-            return "errMsg: 用户名已存在";
+        if (exist != null) {
+            return new ResponseWrapper("用户名已存在");
         }
         long userId = userDAO.insert(account, pwd);
         exist = userDAO.getById(userId);
-        return exist;
+        return new ResponseWrapper(exist, "user");
     }
 
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
@@ -49,15 +50,15 @@ public class UserController {
         account = account.trim();
         pwd = pwd.trim();
         if (account.isEmpty() || null == account || pwd.isEmpty() || null == pwd) {
-            return "errMsg: 用户名或密码不得为空";
+            return new ResponseWrapper("用户名或密码不得为空");
         }
         User exist = userDAO.getByAccount(account);
-        if (exist != null) {
-            return "errMsg: 用户名不存在";
+        if (exist == null) {
+            return new ResponseWrapper("用户名不存在");
         }
         if (!exist.getPassword().equals(pwd)) {
-            return "errMsg: 密码错误";
+            return new ResponseWrapper("密码错误");
         }
-        return exist;
+        return new ResponseWrapper(exist, "user");
     }
 }
