@@ -2,6 +2,8 @@ package chat.User.dao;
 
 import chat.User.model.User;
 
+import java.util.List;
+
 /**
  * created by ewang on 2018/4/18.
  */
@@ -12,4 +14,6 @@ public interface UserDAO {
     User getById(long id);
 
     User getByAccount(String account);
+
+    List<User> findAll();
 }

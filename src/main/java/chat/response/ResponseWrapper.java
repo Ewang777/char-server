@@ -1,7 +1,5 @@
 package chat.response;
 
-import chat.User.model.User;
-import org.springframework.core.MethodParameter;
 
 /**
  * created by ewang on 2018/4/20.

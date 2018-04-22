@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * created by ewang on 2018/4/18.
@@ -28,8 +30,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/reg", method = RequestMethod.POST)
-    public Object reg(@RequestParam("account") String account,
-                      @RequestParam("password") String pwd) {
+    public ResponseWrapper reg(@RequestParam("account") String account,
+                               @RequestParam("password") String pwd) {
         account = account.trim();
         pwd = pwd.trim();
         if (account.isEmpty() || null == account || pwd.isEmpty() || null == pwd) {
@@ -45,8 +47,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
-    public Object login(@RequestParam("account") String account,
-                        @RequestParam("password") String pwd) {
+    public ResponseWrapper login(@RequestParam("account") String account,
+                                 @RequestParam("password") String pwd) {
         account = account.trim();
         pwd = pwd.trim();
         if (account.isEmpty() || null == account || pwd.isEmpty() || null == pwd) {
@@ -60,5 +62,17 @@ public class UserController {
             return new ResponseWrapper("密码错误");
         }
         return new ResponseWrapper(exist, "user");
+    }
+
+    @RequestMapping("/user/find")
+    public ResponseWrapper findFriends(@RequestParam("userId") long userId) {
+        User user = userDAO.getById(userId);
+        if (null == user) {
+            return new ResponseWrapper("用户不存在在");
+        }
+        List<User> friends = userDAO.findAll().stream()
+                .filter(e -> e.getId() != user.getId())
+                .collect(Collectors.toList());
+        return new ResponseWrapper(friends, "userL˚ist");
     }
 }

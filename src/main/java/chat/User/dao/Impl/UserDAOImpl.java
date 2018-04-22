@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * created by ewang on 2018/4/18.
@@ -63,5 +64,11 @@ public class UserDAOImpl implements UserDAO, RowMapper<User> {
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<User> findAll() {
+        String sql = "select * from user";
+        return jdbcTemplate.query(sql, this);
     }
 }
