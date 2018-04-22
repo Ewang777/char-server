@@ -15,7 +15,7 @@ public class ResponseWrapper {
 
     // TODO figure it out
     // Map<String,Object> xxx, xxx.put(String key,T value) works, json => Object
-    // Object xxx, construct(T ooo){ xxx=ooo; } doesn't work, json => array
+    // Object xxx, constructor(T ooo){ xxx=ooo; } doesn't work, json => array
     private final Map<String, Object> data = new HashMap<>();
 
     public ResponseWrapper() {
