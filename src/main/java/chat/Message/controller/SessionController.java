@@ -30,7 +30,7 @@ public class SessionController {
                              @RequestParam("toUserId") long toUserId) {
         Session session = getSession(userId, toUserId);
         List<Message> messages = messageDAO.findBySession(session.getId());
-        return new ResponseWrapper(messages, "messageList");
+        return new ResponseWrapper().addObject(messages, "messageList");
     }
 
     @RequestMapping("/message/send")
@@ -42,7 +42,7 @@ public class SessionController {
         messageDAO.insert(userId, toUserId, toSession.getId(), content);
         long messageId = messageDAO.insert(userId, toUserId, session.getId(), content);
         Message message = messageDAO.getById(messageId);
-        return new ResponseWrapper(message, "message");
+        return new ResponseWrapper().addObject(message, "message");
     }
 
     Session getSession(long userId, long toUserId) {

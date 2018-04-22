@@ -43,7 +43,7 @@ public class UserController {
         }
         long userId = userDAO.insert(account, pwd);
         exist = userDAO.getById(userId);
-        return new ResponseWrapper(exist, "user");
+        return new ResponseWrapper().addObject(exist, "user");
     }
 
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
@@ -61,7 +61,8 @@ public class UserController {
         if (!exist.getPassword().equals(pwd)) {
             return new ResponseWrapper("密码错误");
         }
-        return new ResponseWrapper(exist, "user");
+        return new ResponseWrapper().addObject(exist, "user");
+
     }
 
     @RequestMapping("/user/find")
@@ -73,6 +74,6 @@ public class UserController {
         List<User> friends = userDAO.findAll().stream()
                 .filter(e -> e.getId() != user.getId())
                 .collect(Collectors.toList());
-        return new ResponseWrapper(friends, "userL˚ist");
+        return new ResponseWrapper().addObject(friends, "userList");
     }
 }
