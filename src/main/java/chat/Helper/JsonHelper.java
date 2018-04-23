@@ -1,6 +1,7 @@
 package chat.Helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,6 +38,15 @@ public class JsonHelper {
             throw new RuntimeException("parse json fail: requiredType=" + clazz + ", json=" + data, e);
         }
 
+    }
+
+    public static <T> T decode(String json, TypeReference<T> typeReference) {
+        try {
+            return mapper.readValue(json, typeReference);
+        } catch (Exception e) {
+            throw new RuntimeException( //
+                    "parse json fail: requiredType=" + typeReference + ", json=" + json, e);
+        }
     }
 
 }

@@ -26,7 +26,7 @@ public class SessionController {
     private MessageDAO messageDAO;
 
     @RequestMapping("/message/get")
-    public Object getMessage(@RequestParam("userId") long userId,
+    public ResponseWrapper getMessage(@RequestParam("userId") long userId,
                              @RequestParam("toUserId") long toUserId) {
         Session session = getSession(userId, toUserId);
         List<Message> messages = messageDAO.findBySession(session.getId());
@@ -34,7 +34,7 @@ public class SessionController {
     }
 
     @RequestMapping("/message/send")
-    public Object sendMessage(@RequestParam("userId") long userId,
+    public ResponseWrapper sendMessage(@RequestParam("userId") long userId,
                               @RequestParam("toUserId") long toUserId,
                               @RequestParam("content") String content) {
         Session session = getSession(userId, toUserId);
