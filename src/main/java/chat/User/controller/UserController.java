@@ -83,16 +83,12 @@ public class UserController {
         if (null == currentUser) {
             return new ResponseWrapper("用户不存在在");
         }
-        List<User> friends = userDAO.findAll();
+        List<User> friends = userDAO.findAll().stream().filter(e -> e.getId() != currentUserId).collect(Collectors.toList());
         Map<Long, Message> messageMap = new HashMap<>();
 
         for (User u : friends) {
             long userId = u.getId();
-            if (userId == currentUserId) {
-                friends.remove(u);
-                continue;
-            }
-            Message message = getLatestMessage(currentUser.getId(), userId);
+            Message message = getLatestMessage(currentUserId, userId);
             if (message != null) {
                 messageMap.put(userId, message);
             }
