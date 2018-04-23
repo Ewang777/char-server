@@ -13,6 +13,8 @@ public interface MessageDAO {
 
     List<Message> findBySession(long sessionId);
 
+    Message getLatestBySession(long sessionId);
+
     long insert(long userId, long toUserId, long sessionId, String content);
 
 }

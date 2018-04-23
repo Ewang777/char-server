@@ -1,5 +1,9 @@
 package chat.User.controller;
 
+import chat.Message.dao.MessageDAO;
+import chat.Message.dao.SessionDAO;
+import chat.Message.model.Message;
+import chat.Message.model.Session;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -11,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +29,12 @@ public class UserController {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private MessageDAO messageDAO;
+
+    @Autowired
+    private SessionDAO sessionDAO;
 
     @RequestMapping
     public void init(HttpServletResponse response) throws IOException {
@@ -66,14 +78,36 @@ public class UserController {
     }
 
     @RequestMapping("/user/find")
-    public ResponseWrapper findFriends(@RequestParam("userId") long userId) {
-        User user = userDAO.getById(userId);
-        if (null == user) {
+    public ResponseWrapper findFriends(@RequestParam("userId") long currentUserId) {
+        User currentUser = userDAO.getById(currentUserId);
+        if (null == currentUser) {
             return new ResponseWrapper("用户不存在在");
         }
-        List<User> friends = userDAO.findAll().stream()
-                .filter(e -> e.getId() != user.getId())
-                .collect(Collectors.toList());
-        return new ResponseWrapper().addObject(friends, "userList");
+        List<User> friends = userDAO.findAll();
+        Map<Long, Message> messageMap = new HashMap<>();
+
+        for (User u : friends) {
+            long userId = u.getId();
+            if (userId == currentUserId) {
+                friends.remove(u);
+                continue;
+            }
+            Message message = getLatestMessage(currentUser.getId(), userId);
+            if (message != null) {
+                messageMap.put(userId, message);
+            }
+        }
+        return new ResponseWrapper()
+                .addObject(friends, "userList")
+                .addObject(messageMap, "messageMap");
+    }
+
+    Message getLatestMessage(long userId, long toUserId) {
+        Session session = sessionDAO.getByUserAndToUser(userId, toUserId);
+        if (session == null) {
+            return null;
+        }
+        Message message = messageDAO.getLatestBySession(session.getId());
+        return message;
     }
 }

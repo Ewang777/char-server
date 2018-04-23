@@ -54,6 +54,16 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
         return jdbcTemplate.query(sql, Collections.singletonMap("sessionId", sessionId), this);
     }
 
+    @Override
+    public Message getLatestBySession(long sessionId) {
+        String sql = "select * from message where session_id = :sessionId order by id desc limit 1";
+        try {
+            return jdbcTemplate.queryForObject(sql, Collections.singletonMap("sessionId", sessionId), this);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
+    }
+
     public long insert(long userId, long toUserId, long sessionId, String content) {
         String sql = "insert into message(user_id, to_user_id, session_id, content, create_time) values " +
                 "(:userId, :toUserId, :sessionId, :content, now())";
