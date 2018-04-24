@@ -67,8 +67,8 @@ public class MessageDAOImpl implements MessageDAO, RowMapper<Message> {
     public long insert(long userId, long toUserId, long sessionId, String content) {
         String sql = "insert into message(user_id, to_user_id, session_id, content, create_time) values " +
                 "(:userId, :toUserId, :sessionId, :content, now())";
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
-        parameterSource.addValue("toUserId", toUserId)
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId)
+                .addValue("toUserId", toUserId)
                 .addValue("sessionId", sessionId)
                 .addValue("content", content);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

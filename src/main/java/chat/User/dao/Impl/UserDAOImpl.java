@@ -41,8 +41,8 @@ public class UserDAOImpl implements UserDAO, RowMapper<User> {
 
     public long insert(String account, String password) {
         String sql = "insert into user (account, password, create_time) values (:account, :password, now())";
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource("account", account);
-        parameterSource.addValue("password", password);
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource("account", account)
+        .addValue("password", password);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, parameterSource, keyHolder);
         return keyHolder.getKey().longValue();
