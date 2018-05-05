@@ -3,24 +3,20 @@ package chat.Server;
 import chat.Helper.JsonHelper;
 import chat.Message.model.Message;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 /**
  * created by ewang on 2018/4/19.
  */
-public class ServerThread implements Runnable {
+public class ServerThread extends Thread {
 
     private final Long id;
-    private final Socket socket;
     private final BufferedReader br;
 
-    public ServerThread(Long id, Socket socket) throws IOException {
+    public ServerThread(Long id) throws IOException {
         this.id = id;
-        this.socket = socket;
+        Socket socket = Server.socketMap.get(id);
         this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
     }
 
@@ -33,15 +29,15 @@ public class ServerThread implements Runnable {
             Socket toSocket = Server.socketMap.get(toUserId);
             if (toSocket != null) {
                 try {
-                    OutputStream outputStream = toSocket.getOutputStream();
-                    outputStream.write(message.getContent().getBytes("utf-8"));
+                    OutputStream outputStream=toSocket.getOutputStream();
+                    outputStream.write((message.getContent() + "\n").getBytes("utf-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
+                    throw new RuntimeException("server写出消息内容错误");
                 }
             }
 
         }
-
     }
 
     public String readFromClient() {
@@ -50,7 +46,7 @@ public class ServerThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
             Server.socketMap.remove(id);
+            return null;
         }
-        return null;
     }
 }
