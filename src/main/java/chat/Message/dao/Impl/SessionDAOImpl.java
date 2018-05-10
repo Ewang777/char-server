@@ -34,7 +34,7 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
                 rs.getLong("user_id"),
                 rs.getLong("to_user_id"),
                 new Date(rs.getTimestamp("create_time").getTime()),
-                new Date(rs.getTimestamp("updateTime").getTime()),
+                new Date(rs.getTimestamp("update_time").getTime()),
                 rs.getInt("unread"));
     }
 
