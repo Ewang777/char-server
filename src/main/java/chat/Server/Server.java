@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Server {
 
-    static Map<Long, Socket> socketMap = new HashMap<>();
+    public static Map<Long, Socket> socketMap = new HashMap<>();
 
     public static void main(String[] args) {
         try {

@@ -30,12 +30,6 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
-    @Autowired
-    private MessageDAO messageDAO;
-
-    @Autowired
-    private SessionDAO sessionDAO;
-
     @RequestMapping
     public void init(HttpServletResponse response) throws IOException {
         response.getWriter().print("server is here!");
@@ -77,33 +71,4 @@ public class UserController {
 
     }
 
-    @RequestMapping("/user/find")
-    public ResponseWrapper findFriends(@RequestParam("userId") long currentUserId) {
-        User currentUser = userDAO.getById(currentUserId);
-        if (null == currentUser) {
-            return new ResponseWrapper("用户不存在在");
-        }
-        List<User> friends = userDAO.findAll().stream().filter(e -> e.getId() != currentUserId).collect(Collectors.toList());
-        Map<Long, Message> messageMap = new HashMap<>();
-
-        for (User u : friends) {
-            long userId = u.getId();
-            Message message = getLatestMessage(currentUserId, userId);
-            if (message != null) {
-                messageMap.put(userId, message);
-            }
-        }
-        return new ResponseWrapper()
-                .addObject(friends, "userList")
-                .addObject(messageMap, "messageMap");
-    }
-
-    Message getLatestMessage(long userId, long toUserId) {
-        Session session = sessionDAO.getByUserAndToUser(userId, toUserId);
-        if (session == null) {
-            return null;
-        }
-        Message message = messageDAO.getLatestBySession(session.getId());
-        return message;
-    }
 }

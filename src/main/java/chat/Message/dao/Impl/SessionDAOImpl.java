@@ -33,7 +33,9 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
         return new Session(rs.getLong("id"),
                 rs.getLong("user_id"),
                 rs.getLong("to_user_id"),
-                new Date(rs.getTimestamp("create_time").getTime()));
+                new Date(rs.getTimestamp("create_time").getTime()),
+                new Date(rs.getTimestamp("updateTime").getTime()),
+                rs.getInt("unread"));
     }
 
     @Override
@@ -47,7 +49,7 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
     }
 
     @Override
-    public Session getByUserAndToUser(long userId, long toUserId) {
+    public Session findByUserAndToUser(long userId, long toUserId) {
         String sql = "select * from session where user_id = :userId and to_user_id = :toUserId";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         parameterSource.addValue("toUserId", toUserId);
@@ -59,11 +61,28 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
     }
 
     public long insert(long userId, long toUserId) {
-        String sql = "insert into session (user_id, to_user_id, create_time) values (:userId, :toUserId, now())";
+        String sql = "insert into session (user_id, to_user_id, create_time, update_time, unread) values (:userId, :toUserId, now(), now(), 0)";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         parameterSource.addValue("toUserId", toUserId);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, parameterSource, keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public int updateUnread(long sessionId, int oldData, int newData) {
+        String sql = "update session set unread = :newData where id = :sessionId and unread = :oldData";
+        MapSqlParameterSource params = new MapSqlParameterSource("newData", newData)
+                .addValue("oldData", oldData)
+                .addValue("sessionId", sessionId);
+        return jdbcTemplate.update(sql, params);
+    }
+
+    @Override
+    public int updateTime(long sessionId, Date updateTime) {
+        String sql = "update session set update_time = :updateTime where id = :sessionId";
+        MapSqlParameterSource params = new MapSqlParameterSource("updateTime", updateTime)
+                .addValue("sessionId", sessionId);
+        return jdbcTemplate.update(sql, params);
     }
 }

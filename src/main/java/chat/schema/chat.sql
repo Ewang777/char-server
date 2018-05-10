@@ -16,6 +16,8 @@ CREATE TABLE session(
   user_id bigint unsigned NOT NULL,
   to_user_id bigint unsigned NOT NULL,
   create_time DATETIME NOT NULL,
+  update_time DATETIME NOT NULL,
+  unread int unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT session_fk_user FOREIGN KEY (user_id) REFERENCES user(id),
   CONSTRAINT session_fk_to_user FOREIGN KEY (to_user_id) REFERENCES user(id)
