@@ -42,7 +42,7 @@ public class SessionController {
             return new ResponseWrapper("用户不存在");
         }
         List<User> friends = userDAO.findAll().stream().filter(e -> e.getId() != currentUserId).collect(Collectors.toList());
-        Map<Long, Message> messageMap = new HashMap<>();
+        Map<Long, String> messageMap = new HashMap<>();
         Map<Long, Session> sessionMap = new HashMap<>();
 
         for (User u : friends) {
@@ -52,7 +52,7 @@ public class SessionController {
                 sessionMap.put(toUserId, session);
                 Message message = messageDAO.getLatestBySession(session.getId());
                 if (message != null) {
-                    messageMap.put(toUserId, message);
+                    messageMap.put(toUserId, message.getContent());
                 }
             }
         }
