@@ -4,7 +4,7 @@ import chat.Message.dao.MessageDAO;
 import chat.Message.dao.SessionDAO;
 import chat.Message.model.Message;
 import chat.Message.model.Session;
-import chat.Server.Server;
+import chat.User.controller.UserController;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -86,12 +86,12 @@ public class SessionController {
         Message message = messageDAO.getById(messageId);
         sessionDAO.updateTime(session.getId(), message.getCreateTime());
 
-        if (Objects.equals(userId, toUserId)) {
+        if (!Objects.equals(userId, toUserId)) {
             long toSessionId = toSession.getId();
             int oldUnread = toSession.getUnread();
             messageDAO.insert(userId, toUserId, toSessionId, content);
             sessionDAO.updateTime(toSessionId, message.getCreateTime());
-            if (Server.socketMap.get(toUserId) == null) {
+            if (UserController.socketMap.get(toUserId) == null) {
                 sessionDAO.updateUnread(toSessionId, oldUnread, oldUnread + 1);
             }
         }

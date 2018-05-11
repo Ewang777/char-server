@@ -1,9 +1,6 @@
 package chat.User.controller;
 
-import chat.Message.dao.MessageDAO;
-import chat.Message.dao.SessionDAO;
-import chat.Message.model.Message;
-import chat.Message.model.Session;
+import chat.Server.ServerMainThread;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -15,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * created by ewang on 2018/4/18.
@@ -27,12 +23,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/")
 public class UserController {
 
+    public static Map<Long, Socket> socketMap = new HashMap<>();
+
     @Autowired
     private UserDAO userDAO;
 
     @RequestMapping
     public void init(HttpServletResponse response) throws IOException {
         response.getWriter().print("server is here!");
+        new ServerMainThread(socketMap).start();
     }
 
     @RequestMapping(value = "/user/reg", method = RequestMethod.POST)

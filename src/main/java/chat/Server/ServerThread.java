@@ -5,6 +5,7 @@ import chat.Message.model.Message;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * created by ewang on 2018/4/19.
@@ -13,10 +14,12 @@ public class ServerThread extends Thread {
 
     private final Long id;
     private final BufferedReader br;
+    private Map<Long, Socket> socketMap;
 
-    public ServerThread(Long id) throws IOException {
+    public ServerThread(Long id, Map<Long, Socket> socketMap) throws IOException {
         this.id = id;
-        Socket socket = Server.socketMap.get(id);
+        this.socketMap = socketMap;
+        Socket socket = socketMap.get(id);
         this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
     }
 
@@ -26,10 +29,10 @@ public class ServerThread extends Thread {
         while ((data = readFromClient()) != null) {
             Message message = JsonHelper.decode(data, Message.class);
             long toUserId = message.getToUserId();
-            Socket toSocket = Server.socketMap.get(toUserId);
+            Socket toSocket = socketMap.get(toUserId);
             if (toSocket != null) {
                 try {
-                    OutputStream outputStream=toSocket.getOutputStream();
+                    OutputStream outputStream = toSocket.getOutputStream();
                     outputStream.write((message.getContent() + "\n").getBytes("utf-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -42,10 +45,14 @@ public class ServerThread extends Thread {
 
     public String readFromClient() {
         try {
-            return br.readLine();
+            String data = br.readLine();
+            if (data == null) {
+                socketMap.remove(id);
+            }
+            return data;
         } catch (IOException e) {
             e.printStackTrace();
-            Server.socketMap.remove(id);
+            socketMap.remove(id);
             return null;
         }
     }
