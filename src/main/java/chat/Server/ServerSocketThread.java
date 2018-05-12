@@ -33,7 +33,7 @@ public class ServerSocketThread extends Thread {
             if (toSocket != null) {
                 try {
                     OutputStream outputStream = toSocket.getOutputStream();
-                    outputStream.write((message.getContent() + "\n").getBytes("utf-8"));
+                    outputStream.write((JsonHelper.encode(message) + "\n").getBytes("utf-8"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     throw new RuntimeException("server写出消息内容错误");

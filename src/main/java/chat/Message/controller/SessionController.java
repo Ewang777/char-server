@@ -4,7 +4,6 @@ import chat.Message.dao.MessageDAO;
 import chat.Message.dao.SessionDAO;
 import chat.Message.model.Message;
 import chat.Message.model.Session;
-import chat.Server.StartSocketListener;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -91,11 +90,22 @@ public class SessionController {
             int oldUnread = toSession.getUnread();
             messageDAO.insert(userId, toUserId, toSessionId, content);
             sessionDAO.updateTime(toSessionId, message.getCreateTime());
-            if (StartSocketListener.socketMap.get(toUserId) == null) {
-                sessionDAO.updateUnread(toSessionId, oldUnread, oldUnread + 1);
-            }
+            sessionDAO.updateUnread(toSessionId, oldUnread, oldUnread + 1);
         }
         return new ResponseWrapper().addObject(message, "message");
+    }
+
+    @RequestMapping("/clear/unread")
+    public ResponseWrapper clearUnread(@RequestParam("userId") long userId,
+                                       @RequestParam("toUserId") long toUserId) {
+        Session session = sessionDAO.findByUserAndToUser(userId, toUserId);
+        if(session!=null) {
+            int result = sessionDAO.updateUnread(session.getId(), session.getUnread(), 0);
+            if (result>0){
+                return new ResponseWrapper();
+            }
+        }
+        return new ResponseWrapper("清理未读消息失败");
     }
 
     Session findOrCreateSession(long userId, long toUserId) {
