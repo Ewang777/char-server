@@ -23,15 +23,13 @@ import java.util.Map;
 @RequestMapping("/")
 public class UserController {
 
-    public static Map<Long, Socket> socketMap = new HashMap<>();
-
     @Autowired
     private UserDAO userDAO;
 
     @RequestMapping
     public void init(HttpServletResponse response) throws IOException {
         response.getWriter().print("server is here!");
-        new ServerMainThread(socketMap).start();
+        //如果在controller里启动新线程就会启动三次
     }
 
     @RequestMapping(value = "/user/reg", method = RequestMethod.POST)

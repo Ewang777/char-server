@@ -14,6 +14,8 @@ public class ServerMainThread extends Thread {
 
     private Map<Long, Socket> socketMap;
 
+    protected ServerSocket serverSocket;
+
     public ServerMainThread(Map<Long, Socket> socketMap) {
         this.socketMap = socketMap;
     }
@@ -22,7 +24,7 @@ public class ServerMainThread extends Thread {
     public void run() {
         try {
 
-            ServerSocket serverSocket = new ServerSocket(7777);
+            serverSocket = new ServerSocket(7777);
             System.out.println("server is here!");
             while (true) {
                 System.out.println("waiting...");
@@ -31,8 +33,8 @@ public class ServerMainThread extends Thread {
                 System.out.println("here comes a client whose id is " + socketId);
                 if (socketId != null) {
                     socketMap.put(socketId, socket);
-                    ServerThread serverThread = new ServerThread(socketId, socketMap);
-                    serverThread.start();
+                    ServerSocketThread serverSocketThread = new ServerSocketThread(socketId, socketMap);
+                    serverSocketThread.start();
                 }
 
             }

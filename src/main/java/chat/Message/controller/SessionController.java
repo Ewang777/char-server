@@ -4,7 +4,7 @@ import chat.Message.dao.MessageDAO;
 import chat.Message.dao.SessionDAO;
 import chat.Message.model.Message;
 import chat.Message.model.Session;
-import chat.User.controller.UserController;
+import chat.Server.StartSocketListener;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -91,7 +91,7 @@ public class SessionController {
             int oldUnread = toSession.getUnread();
             messageDAO.insert(userId, toUserId, toSessionId, content);
             sessionDAO.updateTime(toSessionId, message.getCreateTime());
-            if (UserController.socketMap.get(toUserId) == null) {
+            if (StartSocketListener.socketMap.get(toUserId) == null) {
                 sessionDAO.updateUnread(toSessionId, oldUnread, oldUnread + 1);
             }
         }

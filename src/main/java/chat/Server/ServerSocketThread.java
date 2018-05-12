@@ -10,13 +10,13 @@ import java.util.Map;
 /**
  * created by ewang on 2018/4/19.
  */
-public class ServerThread extends Thread {
+public class ServerSocketThread extends Thread {
 
     private final Long id;
     private final BufferedReader br;
     private Map<Long, Socket> socketMap;
 
-    public ServerThread(Long id, Map<Long, Socket> socketMap) throws IOException {
+    public ServerSocketThread(Long id, Map<Long, Socket> socketMap) throws IOException {
         this.id = id;
         this.socketMap = socketMap;
         Socket socket = socketMap.get(id);
