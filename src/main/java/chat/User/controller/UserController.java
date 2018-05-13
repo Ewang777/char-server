@@ -1,6 +1,5 @@
 package chat.User.controller;
 
-import chat.Server.ServerMainThread;
 import chat.User.dao.UserDAO;
 import chat.User.model.User;
 import chat.response.ResponseWrapper;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * created by ewang on 2018/4/18.
