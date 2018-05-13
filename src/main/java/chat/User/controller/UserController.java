@@ -25,7 +25,7 @@ public class UserController {
     @RequestMapping
     public void init(HttpServletResponse response) throws IOException {
         response.getWriter().print("server is here!");
-        //如果在controller里启动新线程就会启动三次
+        //项目启动时会初始化这个东西三次
     }
 
     @RequestMapping(value = "/user/reg", method = RequestMethod.POST)
