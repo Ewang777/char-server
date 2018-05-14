@@ -1,7 +1,6 @@
-package chat.Server;
+package chat.socket;
 
 import chat.Helper.JsonHelper;
-import chat.Message.model.Message;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +26,7 @@ public class ServerSocketThread extends Thread {
     public void run() {
         String data;
         while ((data = readFromClient()) != null) {
-            Message message = JsonHelper.decode(data, Message.class);
+            ClientMessage message = JsonHelper.decode(data, ClientMessage.class);
             long toUserId = message.getToUserId();
             Socket toSocket = socketMap.get(toUserId);
             if (toSocket != null) {

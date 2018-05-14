@@ -14,7 +14,7 @@
     </servlet-mapping>
 
     <listener>
-        <listener-class>chat.Server.StartSocketListener</listener-class>
+        <listener-class>chat.socket.StartSocketListener</listener-class>
     </listener>
 
     <!--spring的字符编码过滤器，仅支持post的表单提交方式-->

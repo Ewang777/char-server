@@ -1,4 +1,4 @@
-package chat.Server;
+package chat.socket;
 
 import org.springframework.stereotype.Component;
 

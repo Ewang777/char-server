@@ -1,7 +1,7 @@
-package chat.User.controller;
+package chat.user.controller;
 
-import chat.User.dao.UserDAO;
-import chat.User.model.User;
+import chat.user.dao.UserDAO;
+import chat.user.model.User;
 import chat.response.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

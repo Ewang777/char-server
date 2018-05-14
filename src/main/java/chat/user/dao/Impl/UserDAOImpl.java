@@ -1,8 +1,8 @@
-package chat.User.dao.Impl;
+package chat.user.dao.Impl;
 
 import chat.Helper.DBHelper;
-import chat.User.dao.UserDAO;
-import chat.User.model.User;
+import chat.user.dao.UserDAO;
+import chat.user.model.User;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

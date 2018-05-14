@@ -1,6 +1,6 @@
-package chat.User.dao;
+package chat.user.dao;
 
-import chat.User.model.User;
+import chat.user.model.User;
 
 import java.util.List;
 
