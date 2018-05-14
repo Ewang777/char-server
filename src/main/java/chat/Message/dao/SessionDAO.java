@@ -11,7 +11,7 @@ public interface SessionDAO {
 
     Session getById(long id);
 
-    Session findByUserAndToUser(long userId, long toUserId);
+    Session getByUserAndToUser(long userId, long toUserId);
 
     long insert(long userId, long toUserId);
 

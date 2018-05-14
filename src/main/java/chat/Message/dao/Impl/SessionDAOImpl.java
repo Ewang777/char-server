@@ -49,7 +49,7 @@ public class SessionDAOImpl implements SessionDAO, RowMapper<Session> {
     }
 
     @Override
-    public Session findByUserAndToUser(long userId, long toUserId) {
+    public Session getByUserAndToUser(long userId, long toUserId) {
         String sql = "select * from session where user_id = :userId and to_user_id = :toUserId";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         parameterSource.addValue("toUserId", toUserId);

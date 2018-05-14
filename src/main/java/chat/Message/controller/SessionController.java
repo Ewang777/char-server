@@ -34,7 +34,7 @@ public class SessionController {
     @Autowired
     private MessageDAO messageDAO;
 
-    @RequestMapping("/get")
+    @RequestMapping("/find")
     public ResponseWrapper findFriends(@RequestParam("userId") long currentUserId) {
         User currentUser = userDAO.getById(currentUserId);
         if (null == currentUser) {
@@ -46,7 +46,7 @@ public class SessionController {
 
         for (User u : friends) {
             long toUserId = u.getId();
-            Session session = sessionDAO.findByUserAndToUser(currentUserId, toUserId);
+            Session session = sessionDAO.getByUserAndToUser(currentUserId, toUserId);
             if (session != null) {
                 sessionMap.put(toUserId, session);
                 Message message = messageDAO.getLatestBySession(session.getId());
@@ -61,7 +61,7 @@ public class SessionController {
                 .addObject(sessionMap, "sessionMap");
     }
 
-    @RequestMapping("/message/get")
+    @RequestMapping("/message/find")
     public ResponseWrapper getMessage(@RequestParam("userId") long userId,
                                       @RequestParam("toUserId") long toUserId) {
         Session session = findOrCreateSession(userId, toUserId);
@@ -98,10 +98,10 @@ public class SessionController {
     @RequestMapping("/clear/unread")
     public ResponseWrapper clearUnread(@RequestParam("userId") long userId,
                                        @RequestParam("toUserId") long toUserId) {
-        Session session = sessionDAO.findByUserAndToUser(userId, toUserId);
-        if(session!=null) {
+        Session session = sessionDAO.getByUserAndToUser(userId, toUserId);
+        if (session != null) {
             int result = sessionDAO.updateUnread(session.getId(), session.getUnread(), 0);
-            if (result>0){
+            if (result > 0) {
                 return new ResponseWrapper();
             }
         }
@@ -109,7 +109,7 @@ public class SessionController {
     }
 
     Session findOrCreateSession(long userId, long toUserId) {
-        Session session = sessionDAO.findByUserAndToUser(userId, toUserId);
+        Session session = sessionDAO.getByUserAndToUser(userId, toUserId);
         if (session == null) {
             long sessionId = sessionDAO.insert(userId, toUserId);
             session = sessionDAO.getById(sessionId);
